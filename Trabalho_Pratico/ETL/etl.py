@@ -1,8 +1,14 @@
 import requests
 import json
 
-from bd.modelo import PokemonM, SpriteM
+from bd.modelo import EvolutionM, PokemonM, SpriteM
 from bd.view import View
+
+def getPokemonNameById(id):
+    url = "https://pokeapi.co/api/v2/pokemon/" + str(id)
+    request = requests.get(url)
+    pokemonJson = json.loads(request.content)
+    return pokemonJson['name'].capitalize()
 
 def getPokemon(id):
     url = "https://pokeapi.co/api/v2/pokemon/" + str(id)
@@ -10,12 +16,23 @@ def getPokemon(id):
     pokemonJson = json.loads(request.content)
     return pokemonJson
 
-def dataloadPokemon(pokemonJson):
+def getPokemonSpecie(id):
+    url = "https://pokeapi.co/api/v2/pokemon-species/" + str(id)
+    request= requests.get(url)
+    pokemonSpecieJson = json.loads(request.content)
+
+    evolutionUrl = pokemonSpecieJson['evolution_chain']['url']
+    request = requests.get(evolutionUrl)
+    evolutionJson = json.loads(request.content)
+    return evolutionJson
+
+def dataloadPokemon(pokemonJson, specieJson):
     pokemonValues = [
         int(pokemonJson['id']),
         pokemonJson['name'].capitalize(),
         float(pokemonJson['height']),
         float(pokemonJson['weight']),
+        int(specieJson['id']),
         pokemonJson['types'][0]['type']['name'].capitalize()
     ]
 
@@ -47,16 +64,36 @@ def dataloadSprit(pokemonJson):
 
     view.printStatus(status)
 
+def dataloadEvolution(specieJson):
+    specieValues = [
+        int(specieJson['id']),
+        specieJson['chain']['species']['name'].capitalize()
+    ]
+
+    evolution = EvolutionM.createEvolution(specieValues)
+    status = EvolutionM.registerEvolution(evolution)
+
+    if(status != 'sucesso'):
+        return "Evolution do pokemon especie com id: " + str(specieJson['id'])
+
+    view.printStatus(status)
+
+
 def dataloadPokemons(minValue, maxValue):
     erros = []
     for id in range (int(minValue), int(maxValue)):
         pokemonJson = getPokemon(id)
+        speciesJson = getPokemonSpecie(id)
         
-        error = dataloadPokemon(pokemonJson)
+        error = dataloadPokemon(pokemonJson, speciesJson)
         if(error != None):
             erros.append(error)
         
         error = dataloadSprit(pokemonJson)
+        if(error != None):
+            erros.append(error)
+
+        error = dataloadEvolution(speciesJson)
         if(error != None):
             erros.append(error)
 
@@ -69,6 +106,10 @@ def deletePokemons(minValue, maxValue):
         status = PokemonM.deletePokemon(id)
         if(status != 'sucesso'):
             erros.append(id)
+
+        pokemonName = getPokemonNameById(id)
+        EvolutionM.deleteEvolution(pokemonName)
+        
         view.printStatus(status)
     
     if(len(erros) != 0):

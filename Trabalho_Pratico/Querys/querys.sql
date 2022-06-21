@@ -3,6 +3,7 @@ CREATE TABLE pokemons (
     name char(20) not null,
     height numeric not null,
     weight numeric not null,
+    evolution_familly_id int not null,
     type1 char(10) not null,
     type2 char(10)
 );
@@ -15,19 +16,12 @@ CREATE TABLE sprites (
 );
 
 CREATE TABLE pokemon_evolutions (
-    id char(20) primary key,
-    base_form_id int not null,
-    second_form_id int not null,
-    third_form_id int not null,
-    FOREIGN KEY(base_form_id) REFERENCES pokemons(dex_num) ON DELETE CASCADE ON UPDATE CASCADE    
-    FOREIGN KEY(second_form_id) REFERENCES pokemons(dex_num) ON DELETE CASCADE ON UPDATE CASCADE    
-    FOREIGN KEY(third_form_id) REFERENCES pokemons(dex_num) ON DELETE CASCADE ON UPDATE CASCADE    
+    family_id int primary key,
+    family_species char(20) not null    
 );
 
 CREATE TABLE regions (
     name char(20) primary key,
     id_first_pokemon int not null,
-    id_last_pokemon int not null,
-    FOREIGN KEY(id_first_pokemon) REFERENCES pokemons(dex_num) ON DELETE CASCADE ON UPDATE CASCADE
-    FOREIGN KEY(id_last_pokemon) REFERENCES pokemons(dex_num) ON DELETE CASCADE ON UPDATE CASCADE
+    id_last_pokemon int not null
 );

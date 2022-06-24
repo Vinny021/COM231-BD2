@@ -17,7 +17,8 @@ CREATE TABLE sprites (
 
 CREATE TABLE pokemon_evolutions (
     family_id int primary key,
-    family_species char(20) not null    
+    family_species char(20) not null,
+    FOREIGN KEY(family_id) REFERENCES pokemons(dex_num) ON DELETE CASCADE ON UPDATE CASCADE   
 );
 
 CREATE TABLE regions (

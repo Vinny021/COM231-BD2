@@ -99,3 +99,28 @@ class EvolutionM():
         string_sql = 'DELETE FROM public.pokemon_evolutions WHERE pokemon_id = %s;'
         status = config.alteraBD(config, string_sql, [family_species])
         return status
+
+class RegionM():
+    def __init__(self, name, id_first_pokemon, id_last_pokemon):
+        self.name = name
+        self.id_first_pokemon = id_first_pokemon
+        self.id_last_pokemon = id_last_pokemon
+    
+    def createRegion(valuesList):
+        region = RegionM(
+            valuesList[0],
+            int(valuesList[1]),
+            int(valuesList[2])
+        )
+        return region
+    
+    def registerRegion(region):
+        string_sql = 'INSERT INTO public.regions(name, id_first_pokemon, id_last_pokemon) VALUES (%s, %s ,%s);'
+        new_insert = (region.name, region.id_first_pokemon, region.id_last_pokemon)
+        status = config.alteraBD(config, string_sql, new_insert)
+        return status
+    
+    def deleteRegion(name):
+        string_sql = 'DELETE FROM public.regions WHERE name = %s;'
+        status = config.alteraBD(config, string_sql, [name])
+        return status

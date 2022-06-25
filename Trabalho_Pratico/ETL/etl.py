@@ -33,11 +33,13 @@ def getRegion(id):
     return regionJson
 
 def dataloadPokemon(pokemonJson, specieJson):
+    formatedHeight = "{:.2f}".format(float((pokemonJson['height']) * 0.1))
+    formatedWeight = "{:.2f}".format(float((pokemonJson['weight']) * 0.1))
     pokemonValues = [
         int(pokemonJson['id']),
         pokemonJson['name'].capitalize(),
-        float(pokemonJson['height']),
-        float(pokemonJson['weight']),
+        float(formatedHeight),
+        float(formatedWeight),
         int(specieJson['id']),
         pokemonJson['types'][0]['type']['name'].capitalize()
     ]

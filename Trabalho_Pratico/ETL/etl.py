@@ -1,7 +1,7 @@
 import requests
 import json
 
-from bd.modelo import EvolutionM, PokemonM, SpriteM
+from bd.modelo import EvolutionM, PokemonM, RegionM, SpriteM
 from bd.view import View
 
 def getPokemonNameById(id):
@@ -25,6 +25,12 @@ def getPokemonSpecie(id):
     request = requests.get(evolutionUrl)
     evolutionJson = json.loads(request.content)
     return evolutionJson
+
+def getRegion(id):
+    url = "https://pokeapi.co/api/v2/generation/" + str(id)
+    request = requests.get(url)
+    regionJson = json.loads(request.content)
+    return regionJson
 
 def dataloadPokemon(pokemonJson, specieJson):
     pokemonValues = [
@@ -78,6 +84,23 @@ def dataloadEvolution(specieJson):
 
     view.printStatus(status)
 
+def dataloadRegion(regionJson):
+    first_id = int(regionJson['pokemon_species'][0]['url'].split('/')[6])
+    last_id = first_id + len(regionJson['pokemon_species']) - 1
+    regionValues = [
+        regionJson['main_region']['name'].capitalize(),
+        first_id,
+        last_id
+    ]
+
+    region = RegionM.createRegion(regionValues)
+    status = RegionM.registerRegion(region)
+
+    if(status != 'sucesso'):
+        return "Já existe região com nome: " + str(regionJson['main_region']['name'].capitalize())
+
+    view.printStatus(status)
+
 
 def dataloadPokemons(minValue, maxValue):
     erros = []
@@ -100,6 +123,19 @@ def dataloadPokemons(minValue, maxValue):
     if(len(erros) != 0):
         print('Erro no registro dos seguintes pokemons: ', erros)
 
+def dataloadRegions(minValue, maxValue):
+    erros = []
+    for id in range(int(minValue), int(maxValue)):
+        regionJson = getRegion(id)
+
+        error = dataloadRegion(regionJson)
+        if(error != None):
+            erros.append(error)
+    
+    if(len(erros) != 0):
+        print('Erro no registro das seguintes regiões: ', erros)
+        
+
 def deletePokemons(minValue, maxValue):
     erros = []
     for id in range (int(minValue), int(maxValue)):
@@ -115,11 +151,25 @@ def deletePokemons(minValue, maxValue):
     if(len(erros) != 0):
         print('Erro no registro dos seguintes pokemons: ', erros)
 
+def deleteRegions(regionName):
+    erros = []
+    
+    status = RegionM.deleteRegion(regionName)
+    if(status != 'sucesso'):
+        erros.append(id)
+        
+    view.printStatus(status)
+    
+    if(len(erros) != 0):
+        print('Região não existe')
+
 def menu():
         print("MENU")
         print("1. Dataload de Pokemons")
         print("2. Remover Range Pokemons")
-        print("3. Sair")
+        print("3. Dataload de Região")
+        print("4. Remover Regiões")
+        print("5. Sair")
         
         option = int(input("Digite o numero da opcao desejada: "))
 
@@ -130,7 +180,7 @@ if __name__ == "__main__":
 
     opcao = menu()
 
-    while opcao != 3:
+    while opcao != 5:
         if opcao == 1:
             minValue = input("Digite o id inicial: ")
             maxValue = input("Digite o id limite (Não é incluido): ")
@@ -139,6 +189,14 @@ if __name__ == "__main__":
             minValue = input("Digite o id inicial: ")
             maxValue = input("Digite o id limite (Não é incluido): ")
             deletePokemons(minValue, maxValue)
+        if opcao == 3:
+            print("Região de 1 até 8\n")
+            minValue = input("Digite o id inicial: ")
+            maxValue = input("Digite o id limite (Não é incluido): ")
+            dataloadRegions(minValue, maxValue)
+        if opcao == 4:
+            regionName = input("Digite o nome da região: ")
+            deleteRegions(regionName.capitalize())
 
         opcao = menu()
 

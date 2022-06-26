@@ -21,9 +21,17 @@ def getPokemonSpecie(id):
     request= requests.get(url)
     pokemonSpecieJson = json.loads(request.content)
 
-    evolutionUrl = pokemonSpecieJson['evolution_chain']['url']
-    request = requests.get(evolutionUrl)
-    evolutionJson = json.loads(request.content)
+    evolutionJson = {"id": None, "chain": {"species": { "name": None}}}
+
+    if(pokemonSpecieJson['evolution_chain'] == None):
+        pokemonJson = getPokemon(id)
+        evolutionJson['id'] = id
+        evolutionJson['chain']['species']['name'] = pokemonJson['name']
+    else:
+        evolutionUrl = pokemonSpecieJson['evolution_chain']['url']
+        request = requests.get(evolutionUrl)
+        evolutionJson = json.loads(request.content)
+    
     return evolutionJson
 
 def getRegion(id):
@@ -37,7 +45,7 @@ def dataloadPokemon(pokemonJson, specieJson):
     formatedWeight = "{:.2f}".format(float((pokemonJson['weight']) * 0.1))
     pokemonValues = [
         int(pokemonJson['id']),
-        pokemonJson['name'].capitalize(),
+        pokemonJson['name'].capitalize()[:20],
         float(formatedHeight),
         float(formatedWeight),
         int(specieJson['id']),

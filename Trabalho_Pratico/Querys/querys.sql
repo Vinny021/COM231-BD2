@@ -15,7 +15,7 @@ CREATE TABLE sprites (
     FOREIGN KEY(pokemon_id) REFERENCES pokemons(dex_num) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE TABLE pokemon_familys (
+CREATE TABLE pokemon_families (
     family_id int primary key,
     family_species char(20) not null,
     FOREIGN KEY(family_id) REFERENCES pokemons(dex_num) ON DELETE CASCADE ON UPDATE CASCADE   

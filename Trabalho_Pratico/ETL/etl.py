@@ -90,6 +90,7 @@ def dataloadRegion(regionJson):
     first_id = int(regionJson['pokemon_species'][0]['url'].split('/')[6])
     last_id = first_id + len(regionJson['pokemon_species']) - 1
     regionValues = [
+        int(regionJson['id']),
         regionJson['main_region']['name'].capitalize(),
         first_id,
         last_id
@@ -153,14 +154,15 @@ def deletePokemons(minValue, maxValue):
     if(len(erros) != 0):
         print('Erro no registro dos seguintes pokemons: ', erros)
 
-def deleteRegions(regionName):
+def deleteRegions(minValue, maxValue):
     erros = []
-    
-    status = RegionM.deleteRegion(regionName)
-    if(status != 'sucesso'):
-        erros.append(id)
+
+    for id in range(int(minValue), int(maxValue)):
+        status = RegionM.deleteRegion(id)
+        if(status != 'sucesso'):
+            erros.append(id)
         
-    view.printStatus(status)
+        view.printStatus(status)
     
     if(len(erros) != 0):
         print('Região não existe')
@@ -197,8 +199,10 @@ if __name__ == "__main__":
             maxValue = input("Digite o id limite (Não é incluido): ")
             dataloadRegions(minValue, maxValue)
         if opcao == 4:
-            regionName = input("Digite o nome da região: ")
-            deleteRegions(regionName.capitalize())
+            print("Região de 1 até 8\n")
+            minValue = input("Digite o id inicial: ")
+            maxValue = input("Digite o id limite (Não é incluido): ")
+            deleteRegions(minValue, maxValue)
 
         opcao = menu()
 

@@ -101,26 +101,28 @@ class EvolutionM():
         return status
 
 class RegionM():
-    def __init__(self, name, id_first_pokemon, id_last_pokemon):
+    def __init__(self ,id, name, id_first_pokemon, id_last_pokemon):
+        self.id = id
         self.name = name
         self.id_first_pokemon = id_first_pokemon
         self.id_last_pokemon = id_last_pokemon
     
     def createRegion(valuesList):
         region = RegionM(
-            valuesList[0],
-            int(valuesList[1]),
-            int(valuesList[2])
+            int(valuesList[0]),
+            valuesList[1],
+            int(valuesList[2]),
+            int(valuesList[3])
         )
         return region
     
     def registerRegion(region):
-        string_sql = 'INSERT INTO public.regions(name, id_first_pokemon, id_last_pokemon) VALUES (%s, %s ,%s);'
-        new_insert = (region.name, region.id_first_pokemon, region.id_last_pokemon)
+        string_sql = 'INSERT INTO public.regions(id, name, id_first_pokemon, id_last_pokemon) VALUES (%s, %s, %s ,%s);'
+        new_insert = (region.id, region.name, region.id_first_pokemon, region.id_last_pokemon)
         status = config.alteraBD(config, string_sql, new_insert)
         return status
     
-    def deleteRegion(name):
-        string_sql = 'DELETE FROM public.regions WHERE name = %s;'
-        status = config.alteraBD(config, string_sql, [name])
+    def deleteRegion(id):
+        string_sql = 'DELETE FROM public.regions WHERE id = %s;'
+        status = config.alteraBD(config, string_sql, [id])
         return status

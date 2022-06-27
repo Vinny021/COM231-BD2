@@ -90,13 +90,13 @@ class EvolutionM():
         return evolution
     
     def registerEvolution(evolution):
-        string_sql = 'INSERT INTO public.pokemon_evolutions(family_id, family_species) VALUES (%s, %s);'
+        string_sql = 'INSERT INTO public.pokemon_families(family_id, family_species) VALUES (%s, %s);'
         new_insert = (evolution.family_id, evolution.family_species)
         status = config.alteraBD(config, string_sql, new_insert)
         return status
     
     def deleteEvolution(family_species):
-        string_sql = 'DELETE FROM public.pokemon_evolutions WHERE pokemon_id = %s;'
+        string_sql = 'DELETE FROM public.pokemon_families WHERE pokemon_id = %s;'
         status = config.alteraBD(config, string_sql, [family_species])
         return status
 

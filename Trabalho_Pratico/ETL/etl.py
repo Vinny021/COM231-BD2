@@ -1,7 +1,7 @@
 import requests
 import json
 
-from bd.modelo import EvolutionM, PokemonM, RegionM, SpriteM
+from bd.modelo import EvolutionFamiliesM, PokemonM, RegionM, SpriteM
 from bd.view import View
 
 def getPokemonNameById(id):
@@ -43,6 +43,7 @@ def getRegion(id):
 def dataloadPokemon(pokemonJson, specieJson):
     formatedHeight = "{:.2f}".format(float((pokemonJson['height']) * 0.1))
     formatedWeight = "{:.2f}".format(float((pokemonJson['weight']) * 0.1))
+
     pokemonValues = [
         int(pokemonJson['id']),
         pokemonJson['name'].capitalize()[:20],
@@ -63,6 +64,8 @@ def dataloadPokemon(pokemonJson, specieJson):
     if(status != 'sucesso'):
         return "Pokemon com id: " + str(pokemonJson['id'])
 
+    print("Inserido pokemon com id: " + str(pokemonJson['id']))
+    
     view.printStatus(status)
 
 def dataloadSprit(pokemonJson):
@@ -77,6 +80,8 @@ def dataloadSprit(pokemonJson):
 
     if(status != 'sucesso'):
         return "Sprite do pokemon com id: " + str(pokemonJson['id'])
+    
+    print("Inserido Sprite do pokemon com id: " + str(pokemonJson['id']))
 
     view.printStatus(status)
 
@@ -86,11 +91,13 @@ def dataloadEvolution(specieJson):
         specieJson['chain']['species']['name'].capitalize()
     ]
 
-    evolution = EvolutionM.createEvolution(specieValues)
-    status = EvolutionM.registerEvolution(evolution)
+    evolution = EvolutionFamiliesM.createEvolution(specieValues)
+    status = EvolutionFamiliesM.registerEvolution(evolution)
 
     if(status != 'sucesso'):
         return "Evolution do pokemon especie com id: " + str(specieJson['id'])
+    
+    print("Inserido familia evolutiva com id: " + str(specieJson['id']))
 
     view.printStatus(status)
 
@@ -109,9 +116,10 @@ def dataloadRegion(regionJson):
 
     if(status != 'sucesso'):
         return "Já existe região com nome: " + str(regionJson['main_region']['name'].capitalize())
+    
+    print("Inserido Região: " + str(regionJson['main_region']['name'].capitalize()))
 
     view.printStatus(status)
-
 
 def dataloadPokemons(minValue, maxValue):
     erros = []
@@ -146,7 +154,6 @@ def dataloadRegions(minValue, maxValue):
     if(len(erros) != 0):
         print('Erro no registro das seguintes regiões: ', erros)
         
-
 def deletePokemons(minValue, maxValue):
     erros = []
     for id in range (int(minValue), int(maxValue)):
@@ -155,7 +162,7 @@ def deletePokemons(minValue, maxValue):
             erros.append(id)
 
         pokemonName = getPokemonNameById(id)
-        EvolutionM.deleteEvolution(pokemonName)
+        EvolutionFamiliesM.deleteEvolution(pokemonName)
         
         view.printStatus(status)
     
@@ -173,24 +180,12 @@ def deleteRegions(minValue, maxValue):
         view.printStatus(status)
     
     if(len(erros) != 0):
-        print('Região não existe')
-
-def menu():
-        print("MENU")
-        print("1. Dataload de Pokemons")
-        print("2. Remover Range Pokemons")
-        print("3. Dataload de Região")
-        print("4. Remover Regiões")
-        print("5. Sair")
-        
-        option = int(input("Digite o numero da opcao desejada: "))
-
-        return option
+        print('Erro nas regiões: ', erros)
 
 if __name__ == "__main__":
     view = View()
 
-    opcao = menu()
+    opcao = View.menu()
 
     while opcao != 5:
         if opcao == 1:
@@ -212,7 +207,7 @@ if __name__ == "__main__":
             maxValue = input("Digite o id limite (Não é incluido): ")
             deleteRegions(minValue, maxValue)
 
-        opcao = menu()
+        opcao = View.menu()
 
 
     

@@ -36,21 +36,6 @@ class PokemonM():
         status = config.alteraBD(config, string_sql, [id])
 
         return status
-    
-    def selectPokemon(id):
-        string_sql = 'SELECT * FROM public.pokemons WHERE dex_num = %s;'
-        pokemons = config.consultaBD(config, string_sql, [id])
-        if(len(pokemons[1]) != 0):
-            pokemon = PokemonM.createPokemon(pokemons[1][0])
-            return pokemon 
-        else: 
-            return None
-    
-    def updatePokemon(l):
-        string_sql = "UPDATE public.pokemons SET %s = %s WHERE dex_num = %s;"
-        params = ((AsIs[l[1]]), int(l[2]), int(l[0]))
-        status = config.alteraBD(config, string_sql, params)
-        return status
 
 class SpriteM():
     def __init__(self, pokemon_id, default_sprite, shiny_sprite):
@@ -77,13 +62,13 @@ class SpriteM():
         status = config.alteraBD(config, string_sql, [id])
         return status
 
-class EvolutionM():
+class EvolutionFamiliesM():
     def __init__(self, family_id, family_species):
         self.family_id = family_id
         self.family_species = family_species
 
     def createEvolution(valuesList):
-        evolution = EvolutionM(
+        evolution = EvolutionFamiliesM(
             int(valuesList[0]),
             valuesList[1]
         )

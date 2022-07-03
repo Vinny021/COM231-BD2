@@ -1,3 +1,9 @@
+-- === Alunos ===
+-- João Pedro M. de Sousa - 2018006008
+-- Vinícius Barbosa - 2020009867
+
+    -- Exercício 2
+
 -- 1
 INSERT INTO person
     (ssn, name, birthDate, address, telephones)

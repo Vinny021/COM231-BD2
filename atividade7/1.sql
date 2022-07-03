@@ -27,8 +27,8 @@ CREATE TYPE type_diplomas as (
 
 CREATE TABLE student (
 	studentNo int not null,
-	department varchar(20),
-	diplomas type_diplomas[] NOT NULL,
+	department varchar(100),
+	diplomas type_diplomas[],
 	PRIMARY KEY(studentNo)
 ) INHERITS (person);
 
@@ -52,6 +52,12 @@ CREATE TABLE course (
 	department varchar(100),
 	teacher int, 
 	PRIMARY KEY(courseNo)
+);
+
+CREATE TABLE prerequisite (
+	courseNo varchar(50) not null,
+	isPrerequisite varchar(50)[],
+	hasPrerequisite varchar(50)[]
 );
 
 CREATE TYPE type_bankAccount as (

@@ -9,7 +9,7 @@ export async function connect() {
         port: 5432,
         username: 'postgres',
         password: 'postgres',
-        database: 'north',
+        database: 'pokemon',
         logging: true,
         entities: ['src/database/models/*.ts']
      });

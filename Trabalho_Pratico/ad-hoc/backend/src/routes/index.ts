@@ -10,7 +10,7 @@ const manager = getManager();
 const routes = Router();
 // const connection = getConnection();
 routes
-  .route("/")
+  .route("/pokemons")
   .get(new PokemonController().index);
 
   
